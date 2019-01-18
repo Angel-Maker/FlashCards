@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">JapaneseFlashcards</string>
+    <string name="home_menu_button_update_words">Update Words</string>
+    <string name="home_menu_button_test_yourself">Test Yourself</string>
+    <string name="update_words_button_add_word">Add New Word!</string>
+    <string name="update_words_recycler_view_sample_text">12345678901234</string>
+
+    <string name="new_word_edit_text_english">English</string>
+    <string name="new_word_edit_text_japanese">Japanese</string>
+    <string name="new_word_edit_text_hint">Enter a hint</string>
+    <string name="new_word_button_add_word">Add word</string>
+
+    <string name="edit_word_button_update_word">Update word</string>
+
+    <string name="flash_card_edit_text_answer">Answer</string>
+    <string name="flash_card_text_view_hint">Hint</string>
+    <string name="flash_card_text_view_show_answer">Show Answer</string>
+    <string name="flash_card_button_submit">Submit</string>
+
+    <string name="word_selector_button_start">Start!</string>
+    <string name="Finish">Finished!</string>
+
+</resources>
