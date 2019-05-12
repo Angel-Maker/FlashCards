@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.angelmaker.japaneseflashcards.R;
+import com.angelmaker.japaneseflashcards.database.OngoingWord;
 import com.angelmaker.japaneseflashcards.database.Word;
 import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
 import com.angelmaker.japaneseflashcards.supportFiles.UpdateWordsListAdapter;
@@ -113,7 +114,9 @@ public class WordSelector extends AppCompatActivity {
                         wordList.addAll(wordsJtoE);
                     }
 
+                    viewModel.dropTable();
                     FlashCards.putExtra("wordList", wordList);
+                    addAllWords(wordList);
                     startActivityForResult(FlashCards, 1);
                 }
 
@@ -143,6 +146,21 @@ public class WordSelector extends AppCompatActivity {
                 adapter.setWordsList(allWords, allWordsFlipped);
             }
         });
+    }
+
+    private void addAllWords(ArrayList<Word> wordList){
+        for(Word word : wordList)
+        {
+            OngoingWord ongoingWord = new OngoingWord();
+            ongoingWord.setEnglish(word.getEnglish());
+            ongoingWord.setJapanese(word.getJapanese());
+            ongoingWord.setHintEtoJ(word.getHintEtoJ());
+            ongoingWord.setHintJtoE(word.getHintJtoE());
+            ongoingWord.setIsCorrect(0);
+
+            viewModel.addOngoingWords(ongoingWord);
+        }
+        return;
     }
 
 
@@ -195,6 +213,9 @@ public class WordSelector extends AppCompatActivity {
 
     protected void onActivityResult ( int requestCode, int resultCode, Intent data){
         // Result code 1 is finish
+        if (resultCode == 1){
+            viewModel.dropTable();
+        }
 
         // Result code 2 is retry wrong answers
         if (resultCode == 2) {
@@ -207,7 +228,5 @@ public class WordSelector extends AppCompatActivity {
                 startActivityForResult(FlashCards, 1);
             }
         }
-
-        adapter.setWordsList(allWords, allWordsFlipped);
     }
 }

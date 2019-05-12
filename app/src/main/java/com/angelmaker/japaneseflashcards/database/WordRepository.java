@@ -60,7 +60,7 @@ public class WordRepository {
     }
 
 
-    //Remove word from DB
+    //Update word from DB
     public void updateWord(Word word)
     {
         new updateWordAsyncTask(wordDao).execute(word);
@@ -83,4 +83,80 @@ public class WordRepository {
 
     public List<Word> getAllWords(){return wordDao.getAllWords();}
     public LiveData<List<Word>> getAllWordsLive(){return wordDao.getAllWordsLive();}
+    public LiveData<List<Word>> getSearchedWordsLive(String subString){return wordDao.getSearchedWordsLive(subString);}
+
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+    //Add ongoing word to DB
+    public void addOngoingWords(OngoingWord ongoingWord)
+    {
+        new addOngoingWordsAsyncTask(wordDao).execute(ongoingWord);
+    }
+
+    private static class addOngoingWordsAsyncTask extends AsyncTask<OngoingWord, Void, Void> {
+
+        private WordDao asyncTaskDao;
+
+        addOngoingWordsAsyncTask(WordDao dao) {
+            asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(OngoingWord... ongoingWord) {
+            asyncTaskDao.addOngoingWord(ongoingWord[0]);
+            return null;
+        }
+    }
+
+
+
+    //Remove word from DB
+    public void dropTable()
+    {
+        new removeOngoingAsyncTask(wordDao).execute();
+    }
+
+    private static class removeOngoingAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private WordDao asyncTaskDao;
+
+        removeOngoingAsyncTask(WordDao dao) {
+            asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            asyncTaskDao.dropTable();
+            return null;
+        }
+    }
+
+    //Update word from DB
+    public void updateOngoingWord(int id, int result)
+    {
+        new updateOngoingWordAsyncTask(wordDao).execute(id, result);
+    }
+
+    private static class updateOngoingWordAsyncTask extends AsyncTask<Integer, Void, Void> {
+
+        private WordDao asyncTaskDao;
+
+        updateOngoingWordAsyncTask(WordDao dao) {
+            asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... ints) {
+            asyncTaskDao.updateOngoingWord(ints[0], ints[1]);
+            return null;
+        }
+    }
+
+
+    //Get a specific OngoingWord
+    public List<OngoingWord> getOngoingWords() {return wordDao.getOngoingWords();}
+    public int getOngoingWordsSize() {return wordDao.getOngoingWordsSize();}
 }

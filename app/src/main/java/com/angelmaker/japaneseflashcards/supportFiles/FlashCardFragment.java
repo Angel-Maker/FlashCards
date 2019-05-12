@@ -1,7 +1,11 @@
 package com.angelmaker.japaneseflashcards.supportFiles;
 
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,9 +20,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.angelmaker.japaneseflashcards.R;
+import com.angelmaker.japaneseflashcards.activities.FlashCards;
+import com.angelmaker.japaneseflashcards.database.OngoingWord;
+import com.angelmaker.japaneseflashcards.database.Word;
+import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
 import com.angelmaker.japaneseflashcards.supportFiles.FlashCardSwipeAdapter;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Observer;
@@ -27,6 +36,7 @@ import java.util.Observer;
  * A simple {@link Fragment} subclass.
  */
 
+@SuppressLint("ValidFragment")
 public class FlashCardFragment extends Fragment {
     TextView tvPosition;
     TextView tvWordToTranslate;
@@ -38,6 +48,7 @@ public class FlashCardFragment extends Fragment {
     ImageButton ibIncorrect;
     ImageButton ibCorrect;
     ImageButton ibTimeToggle;
+    private WordActivityViewModel viewModel;
 
     int position;
     int wordsListSize;
@@ -55,14 +66,23 @@ public class FlashCardFragment extends Fragment {
         }
     };
 
+    public void setViewModel(WordActivityViewModel newViewModel) {
+        viewModel = newViewModel;
+    }
 
-    public FlashCardFragment() {
+    @SuppressLint("ValidFragment")
+    public FlashCardFragment(WordActivityViewModel newViewModel) {
+        viewModel = newViewModel;
+
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        checkCorrectList();
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_flash_card, container, false);
 
@@ -71,6 +91,7 @@ public class FlashCardFragment extends Fragment {
 
         // Get passed in Word
         final Bundle bundle = getArguments();
+
         paused = (ObservableBoolean) bundle.getSerializable("pauseState");
         paused.addObserver(pausedChanged);
 
@@ -87,23 +108,55 @@ public class FlashCardFragment extends Fragment {
         else{ibTimeToggle.setImageResource(android.R.drawable.ic_media_pause);}
 
 
-        String actualAnswer = bundle.getString("answerWord");
         // If already answered, display previous result
         if (FlashCardSwipeAdapter.scoreList[position] == 1){setCorrect();}
-        if (FlashCardSwipeAdapter.scoreList[position] == -1){setIncorrect(actualAnswer);}
+        if (FlashCardSwipeAdapter.scoreList[position] == -1){setIncorrect();}
 
         return view;
+    }
+
+    private void checkCorrectList(){
+        for(int score : FlashCardSwipeAdapter.scoreList){
+            if(score != 0){
+                return;     //Scorelist in not empty and does not need to be pulled from DB
+            }
+        }
+
+        new syncDBCorrectList().execute();  //Scorelist may have been cleared
+    }
+
+
+    private class syncDBCorrectList extends AsyncTask<Void, Void, ArrayList<OngoingWord>> {
+        @Override
+        protected ArrayList<OngoingWord> doInBackground(final Void... voids) {
+            return (ArrayList) viewModel.getOngoingWords();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<OngoingWord> ongoingWords) {
+            for(OngoingWord ongoingWord : ongoingWords) {
+                FlashCardSwipeAdapter.scoreList[ongoingWord.getId()-1] = ongoingWord.getIsCorrect();
+                if(position == (ongoingWord.getId()-1) && ongoingWord.getIsCorrect() == 1){ivResult.setImageResource(R.mipmap.check_circle);}
+                else if(position == (ongoingWord.getId()-1) && ongoingWord.getIsCorrect() == -1){ivResult.setImageResource(R.mipmap.cross_circle);}
+            }
+        }
     }
 
 
     private void setCorrect() {
         ivResult.setImageResource(R.mipmap.check_circle);
         FlashCardSwipeAdapter.scoreList[position] = 1;
+        updateDBCorrect(1);
     }
 
-    private void setIncorrect(String actualAnswer) {
+    private void setIncorrect() {
         ivResult.setImageResource(R.mipmap.cross_circle);
         FlashCardSwipeAdapter.scoreList[position] = -1;
+        updateDBCorrect(-1);
+    }
+
+    private void updateDBCorrect(int result){
+        viewModel.updateOngoingWord(position+1, result);
     }
 
 
@@ -158,7 +211,7 @@ public class FlashCardFragment extends Fragment {
                     setCorrect();
                 }
                 else{
-                    setIncorrect(actualAnswer);
+                    setIncorrect();
                 }
             }
         });
@@ -166,7 +219,7 @@ public class FlashCardFragment extends Fragment {
         ibIncorrect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setIncorrect(actualAnswer);
+                setIncorrect();
             }
         });
         ibCorrect.setOnClickListener(new View.OnClickListener() {

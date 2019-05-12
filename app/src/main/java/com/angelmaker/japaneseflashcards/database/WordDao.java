@@ -12,6 +12,7 @@ import java.util.List;
 @Dao
 public interface WordDao {
 
+    //Persistent word list
     //Adds new word
     @Insert
     void addWord(Word word);
@@ -29,4 +30,24 @@ public interface WordDao {
 
     @Query ("SELECT * FROM words_table")
     LiveData<List<Word>> getAllWordsLive();
+
+    @Query ("SELECT * FROM words_table WHERE english LIKE :subString OR japanese LIKE :subString")
+    LiveData<List<Word>> getSearchedWordsLive(String subString);
+
+
+    //Ongoing word list
+    @Insert
+    void addOngoingWord(OngoingWord ongoingWord);
+
+    @Query ("DELETE FROM ongoing_words_table")
+    void dropTable();
+
+    @Query ("UPDATE ongoing_words_table SET isCorrect = :result WHERE ID = :id")
+    void updateOngoingWord(int id, int result);
+
+    @Query ("SELECT * FROM ongoing_words_table")
+    List<OngoingWord> getOngoingWords();
+
+    @Query ("SELECT COUNT(*) FROM ongoing_words_table")
+    int getOngoingWordsSize();
 }

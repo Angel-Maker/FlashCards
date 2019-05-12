@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.angelmaker.japaneseflashcards.activities.FlashCards;
 import com.angelmaker.japaneseflashcards.database.Word;
+import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
     Activity flashCardsActivity;
     Date startTime;
     Date endTime;
+    private WordActivityViewModel viewModel;
 
 
     private ObservableBoolean paused;
@@ -48,6 +50,7 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
 
     public FlashCardSwipeAdapter(FragmentManager fm, Activity parent) {
         super(fm);
+        viewModel = new WordActivityViewModel(parent.getApplication());
         flashCardsActivity = parent;
         startTime = Calendar.getInstance().getTime();
         pauseTimes = new ArrayList<>();
@@ -75,7 +78,7 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
         // If page is a test question page
         if(position < wordsList.size())
         {
-            fragment = new FlashCardFragment();
+            fragment = new FlashCardFragment(viewModel);
 
             Word word = wordsList.get(position);
             bundle.putInt("position", position);
@@ -128,7 +131,7 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
 
             ArrayList<Word> wrongWords = getWrongWords();
             bundle.putSerializable("wrongWords", wrongWords);
-            }
+        }
 
         fragment.setArguments(bundle);
         return fragment;

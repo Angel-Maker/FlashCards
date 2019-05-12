@@ -2,6 +2,7 @@
     <string name="app_name">JapaneseFlashcards</string>
     <string name="home_menu_button_update_words">Update Words</string>
     <string name="home_menu_button_test_yourself">Test Yourself</string>
+    <string name="home_menu_button_resume">Resume previous test</string>
     <string name="update_words_button_add_word">Add New Word!</string>
     <string name="update_words_recycler_view_sample_text">12345678901234</string>
 
