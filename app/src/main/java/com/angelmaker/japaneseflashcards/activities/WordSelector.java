@@ -1,18 +1,27 @@
 package com.angelmaker.japaneseflashcards.activities;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -21,7 +30,6 @@ import com.angelmaker.japaneseflashcards.R;
 import com.angelmaker.japaneseflashcards.database.OngoingWord;
 import com.angelmaker.japaneseflashcards.database.Word;
 import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
-import com.angelmaker.japaneseflashcards.supportFiles.UpdateWordsListAdapter;
 import com.angelmaker.japaneseflashcards.supportFiles.WordSelectorListAdapter;
 
 import java.util.ArrayList;
@@ -29,11 +37,20 @@ import java.util.Collections;
 import java.util.List;
 
 public class WordSelector extends AppCompatActivity {
+
     //Activity elements
     private Button btnStart;
     private ToggleButton tglbtnWordMix;
     private TextView tvEnglish;
     private TextView tvJapanese;
+    private Button btnSearch;
+    private EditText etSearch;
+
+    SlidingPaneLayout pane;
+
+    private Button btnAddLesson;
+    private EditText etAddLesson;
+    RecyclerView rvLessonLists;
 
     private WordActivityViewModel viewModel;
     public ArrayList<Word> allWords;
@@ -59,7 +76,7 @@ public class WordSelector extends AppCompatActivity {
 
     WordSelectorListAdapter adapter;
 
-    private void setRecyclerView()
+    private void setMainRecyclerView()
     {
         //RecyclerView Setup
         RecyclerView recyclerView = findViewById(R.id.rvWordsList);
@@ -71,6 +88,22 @@ public class WordSelector extends AppCompatActivity {
         //Add dividers between cells
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
+
+        final LifecycleOwner wordSelector = this;
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.getSearchedWordsLive(etSearch.getText().toString()).observe(wordSelector, new Observer<List<Word>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<Word> words) {
+                        //Executed whenever the observed object changes
+                        allWords = (ArrayList) words;
+                        allWordsFlipped = flipList((ArrayList)words);
+                        adapter.setWordsList(allWords, allWordsFlipped);   // Update the cached copy of the words in the adapter.
+                    }
+                });
+            }
+        });
     }
 
     //Find and set the activity elements
@@ -80,6 +113,12 @@ public class WordSelector extends AppCompatActivity {
         tvJapanese = findViewById(R.id.tvJapanese);
         btnStart = findViewById(R.id.btnStart);
         tglbtnWordMix = findViewById(R.id.tglbtnWordMix);
+
+        btnSearch = findViewById(R.id.btnSearch);
+        etSearch = findViewById(R.id.etSearch);
+
+        pane = (SlidingPaneLayout) findViewById(R.id.SlidingPanel);
+        pane.setPanelSlideListener(new PaneListener());
      }
 
     //Set clickable actions
@@ -148,6 +187,7 @@ public class WordSelector extends AppCompatActivity {
         });
     }
 
+
     private void addAllWords(ArrayList<Word> wordList){
         for(Word word : wordList)
         {
@@ -206,7 +246,7 @@ public class WordSelector extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Word> words) {
             allWords = words;
             allWordsFlipped = flipList(words);
-            setRecyclerView();
+            setMainRecyclerView();
         }
     }
 
@@ -219,14 +259,36 @@ public class WordSelector extends AppCompatActivity {
 
         // Result code 2 is retry wrong answers
         if (resultCode == 2) {
+            viewModel.dropTable();
             ArrayList<Word> wrongWords = (ArrayList<Word>) data.getSerializableExtra("wrongWords");
 
             if (wrongWords.size() != 0) {
                 Intent FlashCards = new Intent(this, FlashCards.class);
 
+                addAllWords(wrongWords);
                 FlashCards.putExtra("wordList", wrongWords);
                 startActivityForResult(FlashCards, 1);
             }
+        }
+    }
+
+
+
+    private class PaneListener implements SlidingPaneLayout.PanelSlideListener {
+
+        @Override
+        public void onPanelClosed(View view) {
+            System.out.println("Panel closed");
+        }
+
+        @Override
+        public void onPanelOpened(View view) {
+            System.out.println("Panel opened");
+        }
+
+        @Override
+        public void onPanelSlide(View view, float arg1) {
+            System.out.println("Panel sliding");
         }
     }
 }

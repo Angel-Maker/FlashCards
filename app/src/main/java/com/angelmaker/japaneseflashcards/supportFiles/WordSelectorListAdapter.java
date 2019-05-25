@@ -3,6 +3,7 @@ package com.angelmaker.japaneseflashcards.supportFiles;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,23 +58,34 @@ public class WordSelectorListAdapter extends RecyclerView.Adapter<WordSelectorLi
             holder.btnEnglish.setText(eWord.getEnglish());
             holder.btnJapanese.setText(jWord.getEnglish());     // Japanese words have been flipped so the J word is in E
 
+            //eWordObject is a re-reference of any existing version of this word in the active word list
+            //This is done because when the search button is used, the word objects are recreated as new objects
+            Word eWordObject = eWordIDLookup(eWord.getId());
+            Word jWordObject = jWordIDLookup(jWord.getId());
+
             // If word is already in list, highlight it
-            if(WordSelector.wordsEtoJ.contains(eWord)){holder.btnEnglish.setBackgroundColor(0xFFF8E831);}
+            if(WordSelector.wordsEtoJ.contains(eWordObject)){holder.btnEnglish.setBackgroundColor(0xFFF8E831);}
             else{holder.btnEnglish.setBackgroundColor(0xFFd4d4d4);}
-            if(WordSelector.wordsJtoE.contains(jWord)){holder.btnJapanese.setBackgroundColor(0xFFF8E831);}
+            if(WordSelector.wordsJtoE.contains(jWordObject)){holder.btnJapanese.setBackgroundColor(0xFFF8E831);}
             else{holder.btnJapanese.setBackgroundColor(0xFFd4d4d4);}
+
 
             //If word is clicked, add/remove it and change colour
             holder.btnEnglish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!WordSelector.wordsEtoJ.contains(eWord))
+                    Log.d("zzz", "Checking if: " + eWord.getEnglish() + "  already exists");
+
+                    Word eWordObject = eWordIDLookup(eWord.getId());
+                    if(!WordSelector.wordsEtoJ.contains(eWordObject))
                     {
+                        Log.d("zzz", "It does not, so it is being added");
                         WordSelector.wordsEtoJ.add(eWord);
                         holder.btnEnglish.setBackgroundColor(0xFFF8E831);
                     }
                     else{
-                        WordSelector.wordsEtoJ.remove(eWord);
+                        Log.d("zzz", "It does, so it is being removed");
+                        WordSelector.wordsEtoJ.remove(eWordObject);
                         holder.btnEnglish.setBackgroundColor(0xFFd4d4d4);
                     }
                 }
@@ -82,13 +94,18 @@ public class WordSelectorListAdapter extends RecyclerView.Adapter<WordSelectorLi
             holder.btnJapanese.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!WordSelector.wordsJtoE.contains(jWord))
+                    Log.d("zzz", "Checking if: " + eWord.getEnglish() + "  already exists");
+
+                    Word jWordObject = jWordIDLookup(jWord.getId());
+                    if(!WordSelector.wordsJtoE.contains(jWordObject))
                     {
+                        Log.d("zzz", "It does not, so it is being added");
                         WordSelector.wordsJtoE.add(jWord);
                         holder.btnJapanese.setBackgroundColor(0xFFF8E831);
                     }
                     else{
-                        WordSelector.wordsJtoE.remove(jWord);
+                        Log.d("zzz", "It does, so it is being removed");
+                        WordSelector.wordsJtoE.remove(jWordObject);
                         holder.btnJapanese.setBackgroundColor(0xFFd4d4d4);
                     }
                 }
@@ -96,6 +113,20 @@ public class WordSelectorListAdapter extends RecyclerView.Adapter<WordSelectorLi
         }
     }
 
+
+    public Word eWordIDLookup(int checkID){
+        for (Word word : WordSelector.wordsEtoJ){
+            if(checkID == word.getId()){ return word; }
+        }
+        return null;
+    }
+
+    public Word jWordIDLookup(int checkID){
+        for (Word word : WordSelector.wordsJtoE){
+            if(checkID == word.getId()){ return word; }
+        }
+        return null;
+    }
 
     @Override
     public int getItemCount() {

@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.angelmaker.japaneseflashcards.R;
 import com.angelmaker.japaneseflashcards.activities.FlashCards;
+import com.angelmaker.japaneseflashcards.activities.WordSelector;
 import com.angelmaker.japaneseflashcards.database.OngoingWord;
 import com.angelmaker.japaneseflashcards.database.Word;
 import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;

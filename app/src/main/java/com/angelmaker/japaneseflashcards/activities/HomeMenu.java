@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -56,6 +57,7 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     private void updateActivityElements(){
+        Log.e("zzz", "Checking for existing test");
         if (resumableTest == true){
             btnResumeTest.setVisibility(View.VISIBLE);
         }
@@ -79,7 +81,7 @@ public class HomeMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent testYourself = new Intent(view.getContext(), WordSelector.class);
-                startActivity(testYourself);
+                startActivityForResult(testYourself, 1);
             }
         });
 
@@ -136,27 +138,30 @@ public class HomeMenu extends AppCompatActivity {
 
     protected void onActivityResult ( int requestCode, int resultCode, Intent data){
         // Result code 1 is finish
+
         if (resultCode == 1){
             viewModel.dropTable();
-            new checkIfExistsResumeTest().execute();
         }
 
+
         // Result code 2 is retry wrong answers
-        if (resultCode == 2) {
+        else if (resultCode == 2) {
+            viewModel.dropTable();
             ArrayList<Word> wrongWords = (ArrayList<Word>) data.getSerializableExtra("wrongWords");
 
             if (wrongWords.size() != 0) {
                 Intent FlashCards = new Intent(this, FlashCards.class);
 
                 FlashCards.putExtra("wordList", wrongWords);
-                viewModel.dropTable();
                 addAllWords(wrongWords);
                 startActivityForResult(FlashCards, 1);
             }
         }
+
+        new checkIfExistsResumeTest().execute();
     }
 
-    private void addAllWords(ArrayList<Word> wordList){
+    public void addAllWords(ArrayList<Word> wordList){
         for(Word word : wordList)
         {
             OngoingWord ongoingWord = new OngoingWord();

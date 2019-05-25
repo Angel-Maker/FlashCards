@@ -25,7 +25,6 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
     ArrayList<Long> pauseTimes;
     Boolean fromRight = false;
     Date pauseStartTime;
-    Boolean showAnswers = false;
     Activity flashCardsActivity;
     Date startTime;
     Date endTime;
