@@ -57,7 +57,6 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     private void updateActivityElements(){
-        Log.e("zzz", "Checking for existing test");
         if (resumableTest == true){
             btnResumeTest.setVisibility(View.VISIBLE);
         }

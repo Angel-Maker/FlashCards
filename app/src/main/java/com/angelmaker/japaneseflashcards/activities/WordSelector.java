@@ -30,6 +30,7 @@ import com.angelmaker.japaneseflashcards.R;
 import com.angelmaker.japaneseflashcards.database.OngoingWord;
 import com.angelmaker.japaneseflashcards.database.Word;
 import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
+import com.angelmaker.japaneseflashcards.supportFiles.LessonListAdapter;
 import com.angelmaker.japaneseflashcards.supportFiles.WordSelectorListAdapter;
 
 import java.util.ArrayList;
@@ -74,34 +75,42 @@ public class WordSelector extends AppCompatActivity {
         setClickables();
     }
 
-    WordSelectorListAdapter adapter;
+    WordSelectorListAdapter adapterWS;
 
     private void setMainRecyclerView()
     {
         //RecyclerView Setup
         RecyclerView recyclerView = findViewById(R.id.rvWordsList);
-        adapter = new WordSelectorListAdapter(this);
-        recyclerView.setAdapter(adapter);
-        adapter.setWordsList(allWords, allWordsFlipped);
+        adapterWS = new WordSelectorListAdapter(this);
+        recyclerView.setAdapter(adapterWS);
+        adapterWS.setWordsList(allWords, allWordsFlipped);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //Add dividers between cells
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecoration);
+    }
+
+    LessonListAdapter adapterL;
+
+    private void setLessonListRecyclerView()
+    {
+        //RecyclerView Setup
+        RecyclerView recyclerView = findViewById(R.id.rvLessonLists);
+        adapterL = new LessonListAdapter(this, getApplication(), this);
+        recyclerView.setAdapter(adapterL);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Add dividers between cells
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
 
-        final LifecycleOwner wordSelector = this;
-        btnSearch.setOnClickListener(new View.OnClickListener() {
+        //Link view model to database
+        viewModel.getAllWordsLive().observe(this, new Observer<List<Word>>() {
             @Override
-            public void onClick(View view) {
-                viewModel.getSearchedWordsLive(etSearch.getText().toString()).observe(wordSelector, new Observer<List<Word>>() {
-                    @Override
-                    public void onChanged(@Nullable final List<Word> words) {
-                        //Executed whenever the observed object changes
-                        allWords = (ArrayList) words;
-                        allWordsFlipped = flipList((ArrayList)words);
-                        adapter.setWordsList(allWords, allWordsFlipped);   // Update the cached copy of the words in the adapter.
-                    }
-                });
+            public void onChanged(@Nullable final List<Word> lessons) {
+                //Executed whenever the observed object changes
+                adapterL.setLessonList(lessons);   // Update the cached copy of the words in the adapter.
             }
         });
     }
@@ -172,7 +181,7 @@ public class WordSelector extends AppCompatActivity {
                 if (wordsEtoJ.size() != allWords.size()) { wordsEtoJ = new ArrayList<>(allWords); }
                 else{ wordsEtoJ = new ArrayList<>(); }
 
-                adapter.setWordsList(allWords, allWordsFlipped);
+                adapterWS.setWordsList(allWords, allWordsFlipped);
             }
         });
 
@@ -182,7 +191,23 @@ public class WordSelector extends AppCompatActivity {
                 if (wordsJtoE.size() != allWordsFlipped.size()) { wordsJtoE = new ArrayList<>(allWordsFlipped); }
                 else{ wordsJtoE = new ArrayList<>(); }
 
-                adapter.setWordsList(allWords, allWordsFlipped);
+                adapterWS.setWordsList(allWords, allWordsFlipped);
+            }
+        });
+
+        final LifecycleOwner wordSelector = this;
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.getSearchedWordsLive(etSearch.getText().toString()).observe(wordSelector, new Observer<List<Word>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<Word> words) {
+                        //Executed whenever the observed object changes
+                        allWords = (ArrayList) words;
+                        allWordsFlipped = flipList((ArrayList)words);
+                        adapterWS.setWordsList(allWords, allWordsFlipped);   // Update the cached copy of the words in the adapter.
+                    }
+                });
             }
         });
     }
@@ -247,6 +272,7 @@ public class WordSelector extends AppCompatActivity {
             allWords = words;
             allWordsFlipped = flipList(words);
             setMainRecyclerView();
+            setLessonListRecyclerView();
         }
     }
 
