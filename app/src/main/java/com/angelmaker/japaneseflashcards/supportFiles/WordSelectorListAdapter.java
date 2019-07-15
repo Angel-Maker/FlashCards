@@ -74,17 +74,17 @@ public class WordSelectorListAdapter extends RecyclerView.Adapter<WordSelectorLi
             holder.btnEnglish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("zzz", "Checking if: " + eWord.getEnglish() + "  already exists");
+                    Log.d("zzzWSLA", "Checking if: " + eWord.getEnglish() + "  already exists");
 
                     Word eWordObject = eWordIDLookup(eWord.getId());
                     if(!WordSelector.wordsEtoJ.contains(eWordObject))
                     {
-                        Log.d("zzz", "It does not, so it is being added");
+                        Log.d("zzzWSLA", "It does not, so it is being added");
                         WordSelector.wordsEtoJ.add(eWord);
                         holder.btnEnglish.setBackgroundColor(0xFFF8E831);
                     }
                     else{
-                        Log.d("zzz", "It does, so it is being removed");
+                        Log.d("zzzWSLA", "It does, so it is being removed");
                         WordSelector.wordsEtoJ.remove(eWordObject);
                         holder.btnEnglish.setBackgroundColor(0xFFd4d4d4);
                     }
@@ -94,17 +94,17 @@ public class WordSelectorListAdapter extends RecyclerView.Adapter<WordSelectorLi
             holder.btnJapanese.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("zzz", "Checking if: " + eWord.getEnglish() + "  already exists");
+                    Log.d("zzzWSLA", "Checking if: " + eWord.getEnglish() + "  already exists");
 
                     Word jWordObject = jWordIDLookup(jWord.getId());
                     if(!WordSelector.wordsJtoE.contains(jWordObject))
                     {
-                        Log.d("zzz", "It does not, so it is being added");
+                        Log.d("zzzWSLA", "It does not, so it is being added");
                         WordSelector.wordsJtoE.add(jWord);
                         holder.btnJapanese.setBackgroundColor(0xFFF8E831);
                     }
                     else{
-                        Log.d("zzz", "It does, so it is being removed");
+                        Log.d("zzzWSLA", "It does, so it is being removed");
                         WordSelector.wordsJtoE.remove(jWordObject);
                         holder.btnJapanese.setBackgroundColor(0xFFd4d4d4);
                     }

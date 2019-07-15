@@ -50,4 +50,15 @@ public interface WordDao {
 
     @Query ("SELECT COUNT(*) FROM ongoing_words_table")
     int getOngoingWordsSize();
+
+
+    //Lessons list
+    @Insert
+    void addLessonWord(LessonWord lessonWord);
+
+    //@Query ("SELECT * FROM lessons_table WHERE lessonName IS :lessonListName")
+    //LiveData<List<Word>> getLessonLive(String lessonListName);
+
+    //@Query ("DELETE FROM lessons_table WHERE lessonName IS :lessonListName")
+    //LiveData<List<Word>> removeLesson(String lessonListName);
 }

@@ -120,8 +120,13 @@ public class HomeMenu extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<OngoingWord> ongoingWords) {
             ArrayList<Word> wordList = new ArrayList<>();
+
+            int wordID = 0;
             for(OngoingWord ongoingWord : ongoingWords) {
+                wordID++;
+
                 Word word = new Word();
+                word.setId(wordID);
                 word.setEnglish(ongoingWord.getEnglish());
                 word.setJapanese(ongoingWord.getJapanese());
                 word.setHintEtoJ(ongoingWord.getHintEtoJ());
@@ -161,9 +166,14 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     public void addAllWords(ArrayList<Word> wordList){
+        int wordID = 0;
+
         for(Word word : wordList)
         {
+            wordID++;
+
             OngoingWord ongoingWord = new OngoingWord();
+            ongoingWord.setId(wordID);
             ongoingWord.setEnglish(word.getEnglish());
             ongoingWord.setJapanese(word.getJapanese());
             ongoingWord.setHintEtoJ(word.getHintEtoJ());

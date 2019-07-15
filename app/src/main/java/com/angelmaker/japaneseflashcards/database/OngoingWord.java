@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity(tableName = "ongoing_words_table")
 public class OngoingWord implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     private int id;
 
     @ColumnInfo(name = "english")

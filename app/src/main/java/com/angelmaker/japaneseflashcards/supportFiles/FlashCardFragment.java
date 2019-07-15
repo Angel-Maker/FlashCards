@@ -118,7 +118,7 @@ public class FlashCardFragment extends Fragment {
 
     private void checkCorrectList(){
         for(int score : FlashCardSwipeAdapter.scoreList){
-            if(score != 0){
+            if(score != 0){ // 0 indicates unanswered so we are looking to see if even one question has been scored
                 return;     //Scorelist in not empty and does not need to be pulled from DB
             }
         }
@@ -135,7 +135,10 @@ public class FlashCardFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<OngoingWord> ongoingWords) {
+            //For each ongoing word set the image to correct or incorrect based on the recorded score
             for(OngoingWord ongoingWord : ongoingWords) {
+                Log.d("zzzFCF", "getID is: " + ongoingWord.getId());
+                Log.d("zzzFCF", "The word is : " + ongoingWord.getEnglish());
                 FlashCardSwipeAdapter.scoreList[ongoingWord.getId()-1] = ongoingWord.getIsCorrect();
                 if(position == (ongoingWord.getId()-1) && ongoingWord.getIsCorrect() == 1){ivResult.setImageResource(R.mipmap.check_circle);}
                 else if(position == (ongoingWord.getId()-1) && ongoingWord.getIsCorrect() == -1){ivResult.setImageResource(R.mipmap.cross_circle);}

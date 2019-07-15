@@ -7,7 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 
-@Database(entities = {Word.class, OngoingWord.class}, version = 3, exportSchema = false)
+@Database(entities = {Word.class, OngoingWord.class, LessonWord.class}, version = 5, exportSchema = false)
 public abstract class WordRoomDatabase extends RoomDatabase {
 
     public abstract WordDao wordDao();
@@ -21,6 +21,8 @@ public abstract class WordRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             WordRoomDatabase.class, "word_db")
                             .addMigrations(MIGRATION_2_3)
+                            .addMigrations(MIGRATION_3_4)
+                            .addMigrations(MIGRATION_4_5)
                             .build();
                 }
             }
@@ -42,20 +44,22 @@ public abstract class WordRoomDatabase extends RoomDatabase {
                             "PRIMARY KEY(id))");
         }
     };
-}
 
-
-/*
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
-                    "CREATE TABLE `ongoing_word_list`" +
-                            "(`id` INTEGER, " +
-                            "`wordID` INTEGER," +
-                            "`correct` INTEGER," +
-                            "`translationDirection` INTEGER" +
-                            "PRIMARY KEY(`id`))");
+                    "CREATE TABLE lessons_table " +
+                            "(id INTEGER NOT NULL, " +
+                            "wordID INTEGER NOT NULL," +
+                            "lessonName TEXT NOT NULL," +
+                            "PRIMARY KEY(id))");
         }
     };
- */
+
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+        }
+    };
+}

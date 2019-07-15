@@ -214,9 +214,13 @@ public class WordSelector extends AppCompatActivity {
 
 
     private void addAllWords(ArrayList<Word> wordList){
+        int wordID = 0;
         for(Word word : wordList)
         {
+            wordID++;
+
             OngoingWord ongoingWord = new OngoingWord();
+            ongoingWord.setId(wordID);
             ongoingWord.setEnglish(word.getEnglish());
             ongoingWord.setJapanese(word.getJapanese());
             ongoingWord.setHintEtoJ(word.getHintEtoJ());
