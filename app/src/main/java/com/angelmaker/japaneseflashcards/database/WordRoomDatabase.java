@@ -49,7 +49,7 @@ public abstract class WordRoomDatabase extends RoomDatabase {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
-                    "CREATE TABLE lessons_table " +
+                    "CREATE TABLE lesson_words_table " +
                             "(id INTEGER NOT NULL, " +
                             "wordID INTEGER NOT NULL," +
                             "lessonName TEXT NOT NULL," +

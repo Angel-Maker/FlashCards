@@ -27,6 +27,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.angelmaker.japaneseflashcards.R;
+import com.angelmaker.japaneseflashcards.database.LessonWord;
 import com.angelmaker.japaneseflashcards.database.OngoingWord;
 import com.angelmaker.japaneseflashcards.database.Word;
 import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
@@ -106,9 +107,9 @@ public class WordSelector extends AppCompatActivity {
         recyclerView.addItemDecoration(itemDecoration);
 
         //Link view model to database
-        viewModel.getAllWordsLive().observe(this, new Observer<List<Word>>() {
+        viewModel.getLessonsLive().observe(this, new Observer<List<String>>() {
             @Override
-            public void onChanged(@Nullable final List<Word> lessons) {
+            public void onChanged(@Nullable final List<String> lessons) {
                 //Executed whenever the observed object changes
                 adapterL.setLessonList(lessons);   // Update the cached copy of the words in the adapter.
             }
@@ -128,6 +129,10 @@ public class WordSelector extends AppCompatActivity {
 
         pane = (SlidingPaneLayout) findViewById(R.id.SlidingPanel);
         pane.setPanelSlideListener(new PaneListener());
+
+        btnAddLesson = findViewById(R.id.btnAddLesson);
+        etAddLesson = findViewById(R.id.etAddLesson);
+        rvLessonLists = findViewById(R.id.rvLessonLists);
      }
 
     //Set clickable actions
@@ -210,6 +215,28 @@ public class WordSelector extends AppCompatActivity {
                 });
             }
         });
+
+        btnAddLesson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String newLessonName = etAddLesson.getText().toString();
+                //Toast.makeText(view.getContext(), newLessonName, Toast.LENGTH_LONG).show();
+
+                List<Integer> newLessonWords = new ArrayList<>(); //Get current word IDs
+                newLessonWords.add(1);  //Test add word ID 1 ("aaa")
+
+                if(allWords.size() > 0) {
+                    for (int ID : newLessonWords) {
+                        LessonWord lessonWord = new LessonWord();
+                        Log.d("zzzWS", "Creating new lesson: " + newLessonName + "   containing wordID: " + allWords.get(0).getId());
+                        lessonWord.setId(allWords.get(0).getId());
+                        lessonWord.setLessonName(newLessonName);
+                        viewModel.addLessonWord(lessonWord);
+                    }
+                }
+            }
+        });
+
     }
 
 

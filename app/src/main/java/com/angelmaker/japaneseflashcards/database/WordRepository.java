@@ -159,4 +159,28 @@ public class WordRepository {
     //Get a specific OngoingWord
     public List<OngoingWord> getOngoingWords() {return wordDao.getOngoingWords();}
     public int getOngoingWordsSize() {return wordDao.getOngoingWordsSize();}
+
+
+    //////////////////////////////////////////////////////////////////////////
+    //Add word to DB
+    public void addLessonWord(LessonWord lessonWord) { new addLessonWordAsyncTask(wordDao).execute(lessonWord); }
+
+    private static class addLessonWordAsyncTask extends AsyncTask<LessonWord, Void, Void> {
+
+        private WordDao asyncTaskDao;
+
+        addLessonWordAsyncTask(WordDao dao) {
+            asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(LessonWord... lessonWords) {
+            asyncTaskDao.addLessonWord(lessonWords[0]);
+            return null;
+        }
+    }
+
+    public LiveData<List<String>> getLessonsLive(){return wordDao.getLessonsLive();}
+    public List<LessonWord> getLessonWords(String lessonListName){return wordDao.getLessonWords(lessonListName);}
+    public void removeLesson(String lessonListName) { wordDao.removeLesson(lessonListName); }
 }

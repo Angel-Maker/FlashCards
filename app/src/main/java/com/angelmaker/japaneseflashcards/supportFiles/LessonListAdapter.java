@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.angelmaker.japaneseflashcards.R;
 import com.angelmaker.japaneseflashcards.activities.WordSelector;
+import com.angelmaker.japaneseflashcards.database.LessonWord;
 import com.angelmaker.japaneseflashcards.database.Word;
 import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
 
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class LessonListAdapter extends RecyclerView.Adapter<LessonListAdapter.ActivityViewHolder>{
 
-    private List<Word> lessons;
+    private List<String> lessons;
     WordActivityViewModel viewModel;
     WordSelector wordSelector;
 
@@ -56,16 +57,16 @@ public class LessonListAdapter extends RecyclerView.Adapter<LessonListAdapter.Ac
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
         if (lessons != null)
         {
-            final Word lesson = lessons.get(position);
+            final String lessonName = lessons.get(position);
 
             //Identifying text
-            holder.tvWord.setText(lesson.getEnglish());
+            holder.tvWord.setText(lessonName);
 
             //Delete button
             holder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewModel.removeWord(lesson);
+                    viewModel.removeLesson(lessonName);
                 }
             });
 
@@ -86,7 +87,7 @@ public class LessonListAdapter extends RecyclerView.Adapter<LessonListAdapter.Ac
         else return 0;
     }
 
-    public void setLessonList(List<Word> newLessons)
+    public void setLessonList(List<String> newLessons)
     {
         lessons = newLessons;
         notifyDataSetChanged();

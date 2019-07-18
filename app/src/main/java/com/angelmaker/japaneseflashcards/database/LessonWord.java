@@ -9,9 +9,9 @@ import java.io.Serializable;
 
 @Entity(tableName = "lesson_words_table",
         foreignKeys = @ForeignKey(entity = Word.class,
-        parentColumns = "id",
-        childColumns = "wordID",
-        onDelete = ForeignKey.CASCADE))
+            parentColumns = "id",
+            childColumns = "wordID",
+            onDelete = ForeignKey.CASCADE))
 public class LessonWord implements Serializable {
 
     @PrimaryKey(autoGenerate = true)

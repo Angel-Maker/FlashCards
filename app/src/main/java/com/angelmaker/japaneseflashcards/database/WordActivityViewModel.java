@@ -31,4 +31,9 @@ public class WordActivityViewModel extends AndroidViewModel{
     public void updateOngoingWord(int id, int result){repository.updateOngoingWord(id, result);}
     public List<OngoingWord> getOngoingWords(){return repository.getOngoingWords();}
     public int getOngoingWordsSize(){return repository.getOngoingWordsSize();}
+
+    public void addLessonWord(LessonWord lessonWord) {repository.addLessonWord(lessonWord); }
+    public LiveData<List<String>> getLessonsLive(){return repository.getLessonsLive();}
+    public List<LessonWord> getLessonWords(String lessonListName){return repository.getLessonWords(lessonListName);}
+    public void removeLesson(String lessonListName) { repository.removeLesson(lessonListName); }
 }

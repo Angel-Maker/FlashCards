@@ -56,9 +56,12 @@ public interface WordDao {
     @Insert
     void addLessonWord(LessonWord lessonWord);
 
-    //@Query ("SELECT * FROM lessons_table WHERE lessonName IS :lessonListName")
-    //LiveData<List<Word>> getLessonLive(String lessonListName);
+    @Query ("SELECT lessonName FROM lesson_words_table")
+    LiveData<List<String>> getLessonsLive();
 
-    //@Query ("DELETE FROM lessons_table WHERE lessonName IS :lessonListName")
-    //LiveData<List<Word>> removeLesson(String lessonListName);
+    @Query ("SELECT * FROM lesson_words_table WHERE lessonName IS :lessonListName")
+    List<LessonWord> getLessonWords(String lessonListName);
+
+    @Query ("DELETE FROM lesson_words_table WHERE lessonName IS :lessonListName")
+    void removeLesson(String lessonListName);
 }
