@@ -2,13 +2,16 @@ package com.angelmaker.japaneseflashcards.supportFiles;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.angelmaker.japaneseflashcards.R;
 import com.angelmaker.japaneseflashcards.activities.WordSelector;
@@ -16,13 +19,15 @@ import com.angelmaker.japaneseflashcards.database.LessonWord;
 import com.angelmaker.japaneseflashcards.database.Word;
 import com.angelmaker.japaneseflashcards.database.WordActivityViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LessonListAdapter extends RecyclerView.Adapter<LessonListAdapter.ActivityViewHolder>{
 
-    private List<String> lessons;
+    public List<String> lessons;
     WordActivityViewModel viewModel;
     WordSelector wordSelector;
+    List<LessonWord> lessonWords;
 
     //Constructor that determines context to inflate in
     private final LayoutInflater inflater;
@@ -73,7 +78,8 @@ public class LessonListAdapter extends RecyclerView.Adapter<LessonListAdapter.Ac
             holder.tvWord.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Toast.makeText(view.getContext(), lessonName + " loaded", Toast.LENGTH_LONG).show();
+                    new getLessonWords().execute(lessonName);
                 }
             });
         }
@@ -91,5 +97,50 @@ public class LessonListAdapter extends RecyclerView.Adapter<LessonListAdapter.Ac
     {
         lessons = newLessons;
         notifyDataSetChanged();
+    }
+
+
+
+    private class getLessonWords extends AsyncTask<String, Void, ArrayList<LessonWord>> {
+        @Override
+        protected ArrayList<LessonWord> doInBackground(String... lessonName) {
+
+            return (ArrayList) viewModel.getLessonWords(lessonName[0]);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<LessonWord> lessonWords) {
+            //Clear existing words
+            wordSelector.wordsEtoJ.clear();
+            wordSelector.wordsJtoE.clear();
+
+            //Lookup of lessonWord to Word and add to word lists
+            for(LessonWord lessonWord : lessonWords)
+            {
+                for(Word word : wordSelector.allWords)
+                {
+                    if(lessonWord.getWordID() == word.getId())
+                    {
+                        switch(lessonWord.getSelectionCode())
+                        {
+                            case 0:
+                                wordSelector.wordsEtoJ.add(word);
+                                break;
+                            case 1:
+                                wordSelector.wordsJtoE.add(wordSelector.flipWord(word));
+                                break;
+                            case 2:
+                                wordSelector.wordsEtoJ.add(word);
+                                wordSelector.wordsJtoE.add(wordSelector.flipWord(word));
+                                break;
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            wordSelector.refreshWSLA();
+        }
     }
 }

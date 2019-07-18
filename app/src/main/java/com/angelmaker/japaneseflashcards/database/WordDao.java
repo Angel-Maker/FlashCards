@@ -56,7 +56,7 @@ public interface WordDao {
     @Insert
     void addLessonWord(LessonWord lessonWord);
 
-    @Query ("SELECT lessonName FROM lesson_words_table")
+    @Query ("SELECT DISTINCT lessonName FROM lesson_words_table")
     LiveData<List<String>> getLessonsLive();
 
     @Query ("SELECT * FROM lesson_words_table WHERE lessonName IS :lessonListName")

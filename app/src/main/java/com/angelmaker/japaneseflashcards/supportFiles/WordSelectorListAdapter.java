@@ -94,7 +94,7 @@ public class WordSelectorListAdapter extends RecyclerView.Adapter<WordSelectorLi
             holder.btnJapanese.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("zzzWSLA", "Checking if: " + eWord.getEnglish() + "  already exists");
+                    Log.d("zzzWSLA", "Checking if: " + jWord.getEnglish() + "  already exists");
 
                     Word jWordObject = jWordIDLookup(jWord.getId());
                     if(!WordSelector.wordsJtoE.contains(jWordObject))

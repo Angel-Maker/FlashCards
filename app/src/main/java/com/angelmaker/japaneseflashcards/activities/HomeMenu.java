@@ -1,16 +1,12 @@
 package com.angelmaker.japaneseflashcards.activities;
-//TODO - 1h  - Add search feature to Edit Words
 //TODO - 2h  - Segment FlashCardFragment so only the middle section moves
 //TODO - 1h  - Make timer stop when app closes
-
-//TODO - 8h  - Create arbitrary DBs from word select to create word lists
 
 //TODO - 2h  - Add counter to each word for # of attempts
 
 //TODO - Add metrics
 //TODO - Create new list of words at end of attempt filled with incorrect answers
 //TODO - Reorganize FlashCardFragment UI
-//TODO - Add UI to manage word lists
 
 import android.content.Intent;
 import android.os.AsyncTask;

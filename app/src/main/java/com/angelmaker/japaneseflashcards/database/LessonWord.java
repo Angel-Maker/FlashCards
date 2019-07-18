@@ -23,12 +23,17 @@ public class LessonWord implements Serializable {
     @ColumnInfo(name = "lessonName")
     private String mLessonName;
 
+    //selectionCode indicates if E was selected: 0 ,  J was selected: 1 , or both were selected: 2
+    @ColumnInfo(name = "selectionCode")
+    private int mSelectionCode;
 
     public void setId(int newId){this.id = newId;}
     public void setWordID(int wordID){this.mWordID = wordID;}
     public void setLessonName(String lessonName){this.mLessonName = lessonName;}
+    public void setSelectionCode(int selectionCode){this.mSelectionCode = selectionCode;}
 
     public int getId(){return this.id;}
     public int getWordID(){return this.mWordID;}
     public String getLessonName(){return this.mLessonName;}
+    public int getSelectionCode(){return this.mSelectionCode;}
 }

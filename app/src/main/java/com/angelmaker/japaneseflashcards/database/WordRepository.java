@@ -182,5 +182,23 @@ public class WordRepository {
 
     public LiveData<List<String>> getLessonsLive(){return wordDao.getLessonsLive();}
     public List<LessonWord> getLessonWords(String lessonListName){return wordDao.getLessonWords(lessonListName);}
-    public void removeLesson(String lessonListName) { wordDao.removeLesson(lessonListName); }
+
+
+    //Remove word from DB
+    public void removeLesson(String lessonListName) { new removeLessonAsyncTask(wordDao).execute(lessonListName); }
+
+    private static class removeLessonAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private WordDao asyncTaskDao;
+
+        removeLessonAsyncTask(WordDao dao) {
+            asyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(String... lessonListName) {
+            asyncTaskDao.removeLesson(lessonListName[0]);
+            return null;
+        }
+    }
 }

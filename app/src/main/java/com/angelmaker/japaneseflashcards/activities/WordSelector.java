@@ -220,20 +220,53 @@ public class WordSelector extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String newLessonName = etAddLesson.getText().toString();
-                //Toast.makeText(view.getContext(), newLessonName, Toast.LENGTH_LONG).show();
 
-                List<Integer> newLessonWords = new ArrayList<>(); //Get current word IDs
-                newLessonWords.add(1);  //Test add word ID 1 ("aaa")
+                if (!newLessonName.equals("") && !adapterL.lessons.contains(newLessonName))
+                {
+                    //TODO prevent re-adding existing lesson names
 
-                if(allWords.size() > 0) {
-                    for (int ID : newLessonWords) {
-                        LessonWord lessonWord = new LessonWord();
-                        Log.d("zzzWS", "Creating new lesson: " + newLessonName + "   containing wordID: " + allWords.get(0).getId());
-                        lessonWord.setId(allWords.get(0).getId());
-                        lessonWord.setLessonName(newLessonName);
-                        viewModel.addLessonWord(lessonWord);
+                    List<LessonWord> lessonWords = new ArrayList<>();
+
+                    if (wordsEtoJ.size() != 0 || wordsJtoE.size() != 0)
+                    {
+                        for(Word word : wordsEtoJ)
+                        {
+                            LessonWord lessonWord = new LessonWord();
+                            lessonWord.setWordID(word.getId());
+                            lessonWord.setLessonName(newLessonName);
+                            lessonWord.setSelectionCode(0);
+                            lessonWords.add(lessonWord);
+                        }
+
+                        for(Word word : wordsJtoE)
+                        {
+                            boolean foundExisting = false;
+
+                            for(LessonWord lessonWord : lessonWords){
+                                if(word.getId() == lessonWord.getWordID()){ //Word was already added under E and now also under J
+                                    lessonWord.setSelectionCode(2);
+                                    foundExisting = true;
+                                    break;
+                                }
+                            }
+
+                            //This word is only added as J
+                            if(!foundExisting){
+                                LessonWord lessonWord = new LessonWord();
+                                lessonWord.setWordID(word.getId());
+                                lessonWord.setLessonName(newLessonName);
+                                lessonWord.setSelectionCode(1);
+                                lessonWords.add(lessonWord);
+                            }
+                        }
+
+                        for(LessonWord lessonWord : lessonWords){ viewModel.addLessonWord(lessonWord); }
+
+                        Toast.makeText(view.getContext(), "Added Lesson: " + newLessonName, Toast.LENGTH_LONG).show();
                     }
+                    else { Toast.makeText(view.getContext(), "Your lesson is empty", Toast.LENGTH_LONG).show(); }
                 }
+                else { Toast.makeText(view.getContext(), "Invalid lesson name", Toast.LENGTH_LONG).show(); }
             }
         });
 
@@ -272,7 +305,7 @@ public class WordSelector extends AppCompatActivity {
     }
 
     // Flips a single word
-    private static Word flipWord(Word word)
+    public static Word flipWord(Word word)
     {
         Word flippedWord = new Word();
         flippedWord.setId(word.getId());
@@ -347,5 +380,14 @@ public class WordSelector extends AppCompatActivity {
         public void onPanelSlide(View view, float arg1) {
             System.out.println("Panel sliding");
         }
+    }
+
+    public void refreshWSLA(){
+        //RecyclerView Setup
+        RecyclerView recyclerView = findViewById(R.id.rvWordsList);
+        adapterWS = new WordSelectorListAdapter(this);
+        recyclerView.setAdapter(adapterWS);
+        adapterWS.setWordsList(allWords, allWordsFlipped);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }
