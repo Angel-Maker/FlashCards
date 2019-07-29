@@ -223,8 +223,6 @@ public class WordSelector extends AppCompatActivity {
 
                 if (!newLessonName.equals("") && !adapterL.lessons.contains(newLessonName))
                 {
-                    //TODO prevent re-adding existing lesson names
-
                     List<LessonWord> lessonWords = new ArrayList<>();
 
                     if (wordsEtoJ.size() != 0 || wordsJtoE.size() != 0)

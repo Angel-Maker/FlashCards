@@ -51,10 +51,11 @@ public abstract class WordRoomDatabase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL(
                     "CREATE TABLE lesson_words_table " +
-                            "(id INTEGER NOT NULL, " +
+                            "(id INTEGER PRIMARY KEY NOT NULL, " +
+                            "lessonName TEXT," +
                             "wordID INTEGER NOT NULL," +
-                            "lessonName TEXT NOT NULL," +
-                            "PRIMARY KEY(id))");
+                            "FOREIGN KEY (wordID) REFERENCES words_table(id) ON UPDATE NO ACTION ON DELETE CASCADE)"
+            );
         }
     };
 

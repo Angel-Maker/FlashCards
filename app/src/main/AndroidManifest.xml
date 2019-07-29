@@ -17,7 +17,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.UpdateWords" />
-        <activity android:name=".activities.FlashCards" />
+        <activity android:name=".activities.FlashCards"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".activities.NewWord" />
         <activity android:name=".activities.EditWord" />
         <activity android:name=".activities.WordSelector"></activity>
