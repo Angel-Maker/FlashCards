@@ -145,6 +145,7 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
         return fragment;
     }
 
+    // https://stackoverflow.com/questions/7424562/how-to-change-viewpagers-page
     //viewPager.arrowScroll(View.FOCUS_RIGHT);
     //pager.setCurrentItem( num )
 
@@ -153,7 +154,11 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
         if(currentPosition+advancement > wordsList.size()){
             advancement = wordsList.size() - currentPosition;
         }
+
         viewPager.setCurrentItem(currentPosition+advancement);
+
+        //If anyone is ever reading this code in the future, I know what you are thinking and I'm not sorry
+        currentPosition += advancement-3;
     }
 
     @Override
