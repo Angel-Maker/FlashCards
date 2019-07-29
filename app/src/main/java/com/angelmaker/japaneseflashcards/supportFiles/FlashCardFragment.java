@@ -49,6 +49,9 @@ public class FlashCardFragment extends Fragment {
     ImageButton ibIncorrect;
     ImageButton ibCorrect;
     ImageButton ibTimeToggle;
+    Button btnPlusTen;
+    Button btnPlusHundred;
+    FlashCardSwipeAdapter parent;
     private WordActivityViewModel viewModel;
 
     int position;
@@ -67,14 +70,11 @@ public class FlashCardFragment extends Fragment {
         }
     };
 
-    public void setViewModel(WordActivityViewModel newViewModel) {
-        viewModel = newViewModel;
-    }
 
     @SuppressLint("ValidFragment")
-    public FlashCardFragment(WordActivityViewModel newViewModel) {
+    public FlashCardFragment(WordActivityViewModel newViewModel, FlashCardSwipeAdapter newParent) {
         viewModel = newViewModel;
-
+        parent = newParent;
         // Required empty public constructor
     }
 
@@ -177,6 +177,8 @@ public class FlashCardFragment extends Fragment {
         ibIncorrect = view.findViewById(R.id.ibIncorrect);
         ibCorrect = view.findViewById(R.id.ibCorrect);
         ibTimeToggle = view.findViewById(R.id.ibTimeToggle);
+        btnPlusTen = view.findViewById(R.id.btnPlusTen);
+        btnPlusHundred = view.findViewById(R.id.btnPlusHundred);
     }
 
 
@@ -238,6 +240,22 @@ public class FlashCardFragment extends Fragment {
             public void onClick(View view) {
                 if (paused.getState()){paused.setState(false);}
                 else{paused.setState(true);}
+            }
+        });
+
+        btnPlusTen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("zzzFCF", "plus 10");
+                parent.advancePosition(10);
+            }
+        });
+
+        btnPlusHundred.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("zzzFCF", "plus 100");
+                parent.advancePosition(100);
             }
         });
     }

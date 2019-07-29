@@ -25,7 +25,7 @@ public class FlashCards extends FragmentActivity {
 
     private void createViewPager(ArrayList<Word> words){
         viewPager = findViewById(R.id.pagerQuestions);
-        FlashCardSwipeAdapter flashCardSwipeAdapter = new FlashCardSwipeAdapter(getSupportFragmentManager(), this);
+        FlashCardSwipeAdapter flashCardSwipeAdapter = new FlashCardSwipeAdapter(getSupportFragmentManager(), this, viewPager);
         flashCardSwipeAdapter.setWords(words);
         flashCardSwipeAdapter.initializeScoreList(words.size());
         viewPager.setAdapter(flashCardSwipeAdapter);

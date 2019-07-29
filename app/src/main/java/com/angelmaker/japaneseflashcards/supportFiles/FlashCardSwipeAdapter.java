@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 
 import com.angelmaker.japaneseflashcards.activities.FlashCards;
 import com.angelmaker.japaneseflashcards.database.Word;
@@ -29,6 +31,9 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
     Date startTime;
     Date endTime;
     private WordActivityViewModel viewModel;
+    ViewPager viewPager;
+    int currentPosition = -2;   // -2 because when created, two pages are loaded, advancing the counter by 2
+
 
 
     private ObservableBoolean paused;
@@ -47,7 +52,7 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
     };
 
 
-    public FlashCardSwipeAdapter(FragmentManager fm, Activity parent) {
+    public FlashCardSwipeAdapter(FragmentManager fm, Activity parent, ViewPager ParentViewPager) {
         super(fm);
         viewModel = new WordActivityViewModel(parent.getApplication());
         flashCardsActivity = parent;
@@ -56,11 +61,15 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
         paused = new ObservableBoolean();
         paused.setState(false);
         paused.addObserver(pausedChanged);
+        viewPager = ParentViewPager;
     }
 
 
     @Override
     public Fragment getItem(int position) {
+        if(currentPosition < position){currentPosition+=1;}
+        else if(currentPosition > position){currentPosition-=1;}
+
         Fragment fragment;
         Bundle bundle = new Bundle();
 
@@ -77,7 +86,7 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
         // If page is a test question page
         if(position < wordsList.size())
         {
-            fragment = new FlashCardFragment(viewModel);
+            fragment = new FlashCardFragment(viewModel, this);
 
             Word word = wordsList.get(position);
             bundle.putInt("position", position);
@@ -134,6 +143,17 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
 
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    //viewPager.arrowScroll(View.FOCUS_RIGHT);
+    //pager.setCurrentItem( num )
+
+    public void advancePosition(int advancement){
+        //Log.d("zzzFCSA", "MOVING RIGHT!");
+        if(currentPosition+advancement > wordsList.size()){
+            advancement = wordsList.size() - currentPosition;
+        }
+        viewPager.setCurrentItem(currentPosition+advancement);
     }
 
     @Override
