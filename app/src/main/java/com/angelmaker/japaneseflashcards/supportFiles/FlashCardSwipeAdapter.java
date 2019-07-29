@@ -149,16 +149,10 @@ public class FlashCardSwipeAdapter extends FragmentStatePagerAdapter{
     //viewPager.arrowScroll(View.FOCUS_RIGHT);
     //pager.setCurrentItem( num )
 
-    public void advancePosition(int advancement){
-        //Log.d("zzzFCSA", "MOVING RIGHT!");
-        if(currentPosition+advancement > wordsList.size()){
-            advancement = wordsList.size() - currentPosition;
-        }
-
-        viewPager.setCurrentItem(currentPosition+advancement);
-
-        //If anyone is ever reading this code in the future, I know what you are thinking and I'm not sorry
-        currentPosition += advancement-3;
+    public void setPosition(int position){
+        if (position < 1){position = 1;}
+        else if (position > wordsList.size()){position = wordsList.size()+1;}
+        viewPager.setCurrentItem(position-1);
     }
 
     @Override

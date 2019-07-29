@@ -49,8 +49,8 @@ public class FlashCardFragment extends Fragment {
     ImageButton ibIncorrect;
     ImageButton ibCorrect;
     ImageButton ibTimeToggle;
-    Button btnPlusTen;
-    Button btnPlusHundred;
+    EditText etSkip;
+    Button btnSkip;
     FlashCardSwipeAdapter parent;
     private WordActivityViewModel viewModel;
 
@@ -177,8 +177,8 @@ public class FlashCardFragment extends Fragment {
         ibIncorrect = view.findViewById(R.id.ibIncorrect);
         ibCorrect = view.findViewById(R.id.ibCorrect);
         ibTimeToggle = view.findViewById(R.id.ibTimeToggle);
-        btnPlusTen = view.findViewById(R.id.btnPlusTen);
-        btnPlusHundred = view.findViewById(R.id.btnPlusHundred);
+        etSkip = view.findViewById(R.id.etSkip);
+        btnSkip = view.findViewById(R.id.btnSkip);
     }
 
 
@@ -243,19 +243,11 @@ public class FlashCardFragment extends Fragment {
             }
         });
 
-        btnPlusTen.setOnClickListener(new View.OnClickListener() {
+        btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("zzzFCF", "plus 10");
-                parent.advancePosition(10);
-            }
-        });
-
-        btnPlusHundred.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("zzzFCF", "plus 100");
-                parent.advancePosition(100);
+                int skipPosition = Integer.parseInt(etSkip.getText().toString());
+                parent.setPosition(skipPosition);
             }
         });
     }
